@@ -49,7 +49,8 @@ public class ModelRequestBodyRewriteFunction implements RewriteFunction<String, 
 
     List<String> models = llmProviderConfig.getProvider().getFirst().getAlias().get(model);
     if (!CollectionUtils.isEmpty(models)) {
-      return models.getFirst();
+      // 随机选择一个模型
+      model = models.get((int) (Math.random() * models.size()));
     }
 
     return model;
