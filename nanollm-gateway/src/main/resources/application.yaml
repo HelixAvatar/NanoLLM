@@ -1,6 +1,6 @@
 spring:
   application:
-    name: alibaba-openai-gateway
+    name: nanollm-gateway
 
 server:
   port: 28080
@@ -20,3 +20,13 @@ llm:
         - tongyi-xiaomi-analysis-flash
     apikey:
       - ${DASHSCOPE_API_KEY}
+  - type: xiaomimimo
+    model-prefix: xiaomimimo
+    base-url: https://api.xiaomimimo.com/v1
+    apikey:
+      - ${MIMO_API_KEY}
+  - type: deepseek
+    model-prefix: deepseek
+    base-url: https://api.deepseek.ai/v1
+    apikey:
+      - ${DEEPSEEK_API_KEY}
