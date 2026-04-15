@@ -4,7 +4,9 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.addOriginalRequestUrl;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
 
+import com.github.helixavatar.nanollm.config.LLMProvider;
 import com.github.helixavatar.nanollm.config.LLMProviderConfig;
+import com.github.helixavatar.nanollm.utils.CollectionUtils;
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +52,16 @@ public class LLMProviderRoutingFilter implements GatewayFilter, Ordered {
     log.info("path: {}", path);
 
     if (path.startsWith("/v1/chat/completions")) {
-      // TODO support multiple providers
-      String newPath = llmProviderConfig.getProvider().getFirst().getBaseUrl() + "/chat/completions";
+      String provider = (String) exchange.getAttributes().get("ORIGINAL_MODEL_PROVIDER");
+      LLMProvider llmProvider = llmProviderConfig.getProvider().get(provider);
+
+      String newPath = llmProvider.getBaseUrl() + "/chat/completions";
       URI uri = URI.create(newPath);
       Builder mutate = request.mutate();
       mutate.uri(uri);
-      mutate.header("Authorization", "Bearer " + llmProviderConfig.getProvider().getFirst().getApikey().getFirst());
+      mutate.header("Authorization", "Bearer " + CollectionUtils.randomOne(llmProvider.getApikey()));
 
       ServerHttpRequest newRequest = mutate.build();
-
       exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
 
       return chain.filter(exchange.mutate().request(newRequest).build());

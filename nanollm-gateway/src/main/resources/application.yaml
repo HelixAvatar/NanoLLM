@@ -11,38 +11,35 @@ logging:
 
 llm:
   provider:
-  - type: dashscope
-    model-prefix: dashscope
-    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
-    alias:
-      kimi-k2:
-        - kimi-k2.5
-      qwen3.6:
-        - qwen3.6-plus-2026-04-02
-      xiaomi:
-        - tongyi-xiaomi-analysis-pro
-        - tongyi-xiaomi-analysis-flash
-      qwen3.5:
-        - qwen3.5-122b-a10b
-        - qwen3.5-flash
-        - qwen3.5-plus-2026-02-15
-        - qwen3.5-flash-2026-02-23
-        - qwen3.5-397b-a17b
-      glm-5:
-        - glm-5
-        - glm-5.1
-      MiniMax:
-        - MiniMax-M2.5
-        - MiniMax-M2.1
-    apikey:
-      - ${DASHSCOPE_API_KEY}
-  - type: xiaomimimo
-    model-prefix: xiaomimimo
-    base-url: https://api.xiaomimimo.com/v1
-    apikey:
-      - ${MIMO_API_KEY}
-  - type: deepseek
-    model-prefix: deepseek
-    base-url: https://api.deepseek.ai/v1
-    apikey:
-      - ${DEEPSEEK_API_KEY}
+    dashscope:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      alias:
+        kimi-k2:
+          - kimi-k2.5
+        qwen3.6:
+          - qwen3.6-plus-2026-04-02
+        xiaomi:
+          - tongyi-xiaomi-analysis-pro
+          - tongyi-xiaomi-analysis-flash
+        qwen3.5:
+          - qwen3.5-122b-a10b
+          - qwen3.5-flash
+          - qwen3.5-plus-2026-02-15
+          - qwen3.5-flash-2026-02-23
+          - qwen3.5-397b-a17b
+        glm-5:
+          - glm-5
+          - glm-5.1
+        MiniMax:
+          - MiniMax-M2.5
+          - MiniMax-M2.1
+      apikey:
+        - ${DASHSCOPE_API_KEY}
+    xiaomimimo:
+      base-url: https://api.xiaomimimo.com/v1
+      apikey:
+        - ${MIMO_API_KEY}
+    deepseek:
+      base-url: https://api.deepseek.ai/v1
+      apikey:
+        - ${DEEPSEEK_API_KEY}
