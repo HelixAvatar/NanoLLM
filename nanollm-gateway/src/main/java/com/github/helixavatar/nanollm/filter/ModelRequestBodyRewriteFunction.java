@@ -2,6 +2,7 @@ package com.github.helixavatar.nanollm.filter;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.github.helixavatar.nanollm.config.LLMProvider;
 import com.github.helixavatar.nanollm.config.LLMProviderConfig;
 import com.github.helixavatar.nanollm.utils.CollectionUtils;
 import java.util.List;
@@ -48,11 +49,12 @@ public class ModelRequestBodyRewriteFunction implements RewriteFunction<String, 
     model = split[1];
 
     exchange.getAttributes().put("ORIGINAL_MODEL_PROVIDER", provider);
-
-    // TODO 此处应该增加供应商不存在的处理
-    List<String> models = llmProviderConfig.getProvider().get(provider).getAlias().get(model);
-    if (CollectionUtils.isNotEmpty(models)) {
-      model = CollectionUtils.randomOne(models);
+    LLMProvider llmProvider = llmProviderConfig.getProvider().get(provider);
+    if (llmProvider != null) {
+      List<String> models = llmProviderConfig.getProvider().get(provider).getAlias().get(model);
+      if (CollectionUtils.isNotEmpty(models)) {
+        model = CollectionUtils.randomOne(models);
+      }
     }
 
     return model;

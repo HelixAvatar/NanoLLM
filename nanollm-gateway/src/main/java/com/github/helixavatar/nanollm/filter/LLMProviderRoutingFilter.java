@@ -4,6 +4,8 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.addOriginalRequestUrl;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.github.helixavatar.nanollm.config.LLMProvider;
 import com.github.helixavatar.nanollm.config.LLMProviderConfig;
 import com.github.helixavatar.nanollm.utils.CollectionUtils;
@@ -13,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequest.Builder;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -53,7 +59,21 @@ public class LLMProviderRoutingFilter implements GatewayFilter, Ordered {
 
     if (path.startsWith("/v1/chat/completions")) {
       String provider = (String) exchange.getAttributes().get("ORIGINAL_MODEL_PROVIDER");
-      LLMProvider llmProvider = llmProviderConfig.getProvider().get(provider);
+      LLMProvider llmProvider = null;
+      if (provider != null) {
+        llmProvider = llmProviderConfig.getProvider().get(provider);
+      }
+
+      if (llmProvider == null) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
+
+        JSONObject error = new JSONObject();
+        error.put("error", "Model provider not found");
+        DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSON.toJSONBytes(error));
+        return response.writeWith(Mono.just(bodyDataBuffer));
+      }
 
       String newPath = llmProvider.getBaseUrl() + "/chat/completions";
       URI uri = URI.create(newPath);
