@@ -8,6 +8,7 @@ server:
 logging:
   level:
     org.springframework.cloud: DEBUG
+    ChatMessage: DEBUG
 
 llm:
   provider:

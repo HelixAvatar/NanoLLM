@@ -8,6 +8,8 @@ import com.github.helixavatar.nanollm.utils.CollectionUtils;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.stereotype.Component;
@@ -18,12 +20,15 @@ import reactor.core.publisher.Mono;
 @Component
 public class ModelRequestBodyRewriteFunction implements RewriteFunction<String, String> {
 
+  static final Logger logger = LoggerFactory.getLogger("ChatMessage");
+
   @Autowired
   private LLMProviderConfig llmProviderConfig;
 
   @Override
   public Publisher<String> apply(ServerWebExchange exchange, String s) {
     String trim = s.trim();
+    logger.debug("{}", trim);
     if (trim.startsWith("{") && trim.endsWith("}")) {
       JSONObject jsonObject = JSON.parseObject(trim);
       String originModel = jsonObject.getString("model");
