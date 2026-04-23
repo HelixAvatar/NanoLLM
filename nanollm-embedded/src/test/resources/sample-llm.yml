@@ -1,0 +1,14 @@
+llm:
+  provider:
+    dashscope:
+      base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      apikey:
+        - sk-test-1
+        - sk-test-2
+      alias:
+        kimi-k2:
+          - kimi-k2.5
+    minimal:
+      base-url: http://127.0.0.1:9/v1
+      apikey:
+        - key-only

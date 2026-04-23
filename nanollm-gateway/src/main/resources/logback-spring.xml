@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+  <appender name="CHAT_MESSAGE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/chat_message.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/chat_message.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>${FILE_LOG_PATTERN}</pattern>
+      <charset>${FILE_LOG_CHARSET}</charset>
+    </encoder>
+  </appender>
+
+  <logger name="ChatMessage" level="DEBUG" additivity="false">
+    <appender-ref ref="CHAT_MESSAGE"/>
+  </logger>
+</configuration>
