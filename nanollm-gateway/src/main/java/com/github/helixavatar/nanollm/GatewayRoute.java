@@ -17,6 +17,7 @@ public class GatewayRoute {
             "llm-route",
             r -> r.path("/v1/**")
                 .filters(f -> f.modifyRequestBody(String.class, String.class, modelRequestBodyRewriteFunction)
+                    .setResponseHeader("Content-Type", "text/event-stream")
                     .filter(llmProviderRoutingFilter)
                 )
                 .uri("https://abc.com/"))
